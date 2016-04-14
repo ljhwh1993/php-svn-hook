@@ -7,9 +7,11 @@ abstract class BasePreCommitCheck {
   protected $codeError = array();
   protected $options = array();
 
-  public function __construct($svnComment=''){
+  public function __construct($repoName, $trxNum, $svnComment=''){
     $this->svnComment = $svnComment;
     $this->parseOptions();
+    $this->repoName = $repoName;
+    $this->trxNum = $trxNum;
   }
   
   abstract function getTitle();
@@ -31,6 +33,7 @@ abstract class BasePreCommitCheck {
       if($fileResult = $this->checkFullFile($lines, $filename)){
         $this->globalError[] = $fileResult;
       }
+//error_log(print_r($this->globalError, true)."\n", 3, '/tmp/a');
       
       //Check line by line
       foreach ($lines as $pos => $line){
