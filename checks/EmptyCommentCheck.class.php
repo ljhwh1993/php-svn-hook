@@ -23,9 +23,10 @@ class EmptyCommentCheck extends BasePreCommitCheck {
 
     exec('/usr/bin/svnlook changed -t "'.$this->trxNum.'" "'.$this->repoName.'"', $result);
     //error_log(print_r($result, true)."\n".substr($result[0], 4, 4)."\n", 3, '/tmp/a');
+    //error_log(print_r($comment, true)."\n", 3, '/tmp/a');
     //error_log((int)preg_match('\w+-\d+[ ,].*review[ ]+by[ ]+\w+[ ,].*(ready|test)', $comment)."\n", 3, '/tmp/a');
     //if ((substr($result[0], 4, 4) == 'tags') && (0 == preg_match('/\w+-\d+[ ,].*review[ ]+by[ ]+\w+[ ,].*(ready|test)/', $comment, $matches))) {
-    if ((substr($result[0], 4, 4) == 'tags') && (0 == preg_match('/\w+-\d+[ ,].*review[ ]+by[ ]+\w+[ ]+D\d+[ ,].*(ready|test)/', $comment, $matches))) {
+    if ((false !== strpos($result[0], 'tags')) && (0 == preg_match('/\w+-\d+[ ,].*review[ ]+by[ ]+\w+[ ]+D\d+[ ,].*(ready|test)/', $comment, $matches))) {
       //error_log("\n aaaaaaaa \n".print_r($matches, true), 3, '/tmp/a');
       //return 'comment format wrong,ex: "ark-111, DC-112, review by xxx , test"';
       return 'comment format wrong,ex: "ark-111, DC-112, review by xxxxxxxx Dxxx, test"';
