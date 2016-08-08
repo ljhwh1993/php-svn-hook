@@ -83,6 +83,7 @@ class PreCommitManager {
 
     // Read the message and the file changed
     $mess = svn_get_commit_message($this->repoName, $this->trxNum);
+//error_log("$this->repoName, $this->trxNum, $mess\n", 3, '/tmp/a');
     $fileChanges = svn_get_commited_files($this->repoName, $this->trxNum);
 
     // Run all the script

@@ -4,24 +4,31 @@ require_once dirname(__FILE__).DIRECTORY_SEPARATOR.'BasePreCommitCheck.class.php
 class EmptyCommentCheck extends BasePreCommitCheck {
   
   function getTitle(){
-    return "Reject minimalistic comment";
+    return "Reject commit by your comment";
   }
   
   public function renderErrorSummary(){
-    return "Commit message empty or too short!";
+    return "Commit message is ilegal!";
   }
   
   public function checkSvnComment($comment){
+
+    //error_log("\n haha ".print_r($comment, true)."\n", 3, '/tmp/a');
     if (strlen($comment) < 5){
       return 'You must give me more than 5 chars as comment!';
+    }
+    if (strpos($comment, 'self')){
+      return 'You can NOT review by yourself, find someone else to help you!';
     }
 
     exec('/usr/bin/svnlook changed -t "'.$this->trxNum.'" "'.$this->repoName.'"', $result);
     //error_log(print_r($result, true)."\n".substr($result[0], 4, 4)."\n", 3, '/tmp/a');
     //error_log((int)preg_match('\w+-\d+[ ,].*review[ ]+by[ ]+\w+[ ,].*(ready|test)', $comment)."\n", 3, '/tmp/a');
-    if ((substr($result[0], 4, 4) == 'tags') && (0 == preg_match('/\w+-\d+[ ,].*review[ ]+by[ ]+\w+[ ,].*(ready|test)/', $comment, $matches))) {
+    //if ((substr($result[0], 4, 4) == 'tags') && (0 == preg_match('/\w+-\d+[ ,].*review[ ]+by[ ]+\w+[ ,].*(ready|test)/', $comment, $matches))) {
+    if ((substr($result[0], 4, 4) == 'tags') && (0 == preg_match('/\w+-\d+[ ,].*review[ ]+by[ ]+\w+[ ]+D\d+[ ,].*(ready|test)/', $comment, $matches))) {
       //error_log("\n aaaaaaaa \n".print_r($matches, true), 3, '/tmp/a');
-      return 'comment format wrong,ex: "ark-111, DC-112, review by xxx , test"';
+      //return 'comment format wrong,ex: "ark-111, DC-112, review by xxx , test"';
+      return 'comment format wrong,ex: "ark-111, DC-112, review by xxxxxxxx Dxxx, test"';
     }
   }
 }
